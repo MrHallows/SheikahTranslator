@@ -625,8 +625,18 @@ void OLED_SSD1306::drawBitmap(unsigned char x0, unsigned char y0, unsigned char 
 // Display the Sheikah Character Map
 void OLED_SSD1306::printSheikahMap(void)
 {
-	// TODO: Create a for loop to display this (hopefully) using less memory.
-	this->print8x8Str(6, 0, "A");
+	// TODO: Create a for loop to display this [hopefully] using less memory.
+	unsigned char x = 6, y = 0, i = 0;
+
+	for(i = 0; i < sizeof(SheikahChars); i++)
+	{
+		for(x = 6; x <= 114; x += 18)
+			this->print8x8Str(x, y, SheikahChars[i]);
+			
+		x = 6;
+		y++;
+	}
+	/*this->print8x8Str(6, 0, "A");
 	this->print8x8Str(24, 0, "B");
 	this->print8x8Str(42, 0, "C");
 	this->print8x8Str(60, 0, "D");
@@ -656,7 +666,7 @@ void OLED_SSD1306::printSheikahMap(void)
 	this->print8x8Str(60, 3, "Y");
 	this->print8x8Str(78, 3, "Z");
 	this->print8x8Str(96, 3, " ");
-	this->print8x8Str(114, 3, ".");
+	this->print8x8Str(114, 3, ".");*/
 }
 
 

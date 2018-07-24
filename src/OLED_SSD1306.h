@@ -41,12 +41,12 @@
 #define DC_PIN  						11 // DC
 
 // Button Pins
-#define BTN_UP_PIN    					5 // D5
-#define BTN_DOWN_PIN  					4 // D4
-#define BTN_LEFT_PIN  					3 // D3
-#define BTN_RIGHT_PIN 					2 // D2
-#define BTN_A_PIN     					6 // D6
-#define BTN_B_PIN     					7 // D7
+#define BTN_UP_PIN						5 // D5
+#define BTN_DOWN_PIN					4 // D4
+#define BTN_LEFT_PIN					3 // D3
+#define BTN_RIGHT_PIN					2 // D2
+#define BTN_A_PIN						6 // D6
+#define BTN_B_PIN						7 // D7
 //#define BTN_L_PIN // Left Bumper (NOT YET ADDED)
 //#define BTN_R_PIN // Right Bumper (NOT YET ADDED)
 //#define BTN_START_PIN // (NOT YET ADDED)
@@ -94,7 +94,7 @@
 #define SETSTARTLINE 					0x40
 #define SETVCOMDETECT 					0xDB
 #define SWITCHCAPVCC 					0x2
-*/
+
 // Scroll
 #define ACTIVATESCROLL 					0x2F
 #define DEACTIVATESCROLL 				0x2E
@@ -103,7 +103,7 @@
 #define LEFTHORIZONTALSCROLL 			0x27
 #define VERTICALRIGHTHORIZONTALSCROLL	0x29
 #define VERTICALLEFTHORIZONTALSCROLL	0x2A
-/**/
+*/
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *
  * Alternative Display Command Table
@@ -178,8 +178,8 @@ public:
 	void clearBuffer(void);										// Clear the buffer
 	void flushBuffer(void);										// Push buffer data to the screen
 	void setPosition(unsigned char x, unsigned char y); 		// Set the coordinates
-	void loadSplash(void);										// Load the splash screen bitmap from PROGMEM
-	void setDelay(unsigned int ms); 							// Set Delay
+	void loadSplash(void);										// Load the splash screen bitmap from flash memory
+	void setDelay(unsigned int ms); 							// Set delay in milliseconds
 
 	// Text
 	void print6x8Char(unsigned char x, unsigned char y, unsigned char ch); 						// Print char (byte) at the given coordinates
@@ -200,8 +200,8 @@ public:
 	void drawBitmap(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1, unsigned char bmp[]); 	// Draw a bitmap image with the given coordinates and size
 
 	// Sheikah Character Map
-	void printSheikahMap(void); 								// Display the Sheikah Character Map
-	void setSelector(unsigned char x, unsigned char y); 		// 
+	void printSheikahMap(void); 								// Display the Sheikah character map
+	void setSelector(unsigned char x, unsigned char y); 		// Place the selector at the given position
 	void setSelectorPos(unsigned char x, unsigned char y); 		// 
 	void clearPrevSelector(void); 								// 
 	unsigned char getSelectedChar(void); 						// 
@@ -240,28 +240,16 @@ public:
 	unsigned char buffer[1024]; 								// Screen buffer
 	unsigned char splashArray[1024];							// Splash screen bitmap array
 
-	//static const unsigned char Selector[6] PROGMEM = { 0x00, 0x7C, 0x38, 0x10, 0x00, 0x00 };
-	//static const unsigned char SelectorBlank[6] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	unsigned char selectorPosX = 0;
 	unsigned char selectorPosY = 0;
 	unsigned char prevSelectorPosX;
 	unsigned char prevSelectorPosY;
-	//char SheikahChars[28] PROGMEM = { "A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z", " ", "." };
-	//char SheikahChars[28] PROGMEM = { '\65', '\66', '\67', '\68', '\69', '\70', '\71', '\72', '\73', '\74', '\75', '\76', '\77', '\78', '\79', '\80', '\81', '\82', '\83', '\84', '\85', '\86', '\87', '\88', '\89', '\90', '\32', '\46' };
-	//char SheikahChars[28] PROGMEM = { 65, 66, 67, 68, 69, 70, 71, 72, 73, 74, 75, 76, 77, 78, 79, 80, 81, 82, 83, 84, 85, 86, 87, 88, 89, 90, 32, 46 };
-	//static const unsigned char SheikahChars[28] PROGMEM = { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x20, 0x2E };
 	unsigned char selectedChar;
 
-	//static const unsigned char Cursor[6] PROGMEM = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x00 };
-	//static const unsigned char CursorBlank[6] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 	unsigned char cursorPosX = 1;
 	unsigned char cursorPosY = 7;
 	unsigned char prevCursorPosX;
 	unsigned char prevCursorPosY;
-
-	//static const unsigned char HR_Top[6] PROGMEM = { 0x02, 0x02, 0x02, 0x02, 0x02, 0x02 };
-	//static const unsigned char HR_Middle[6] PROGMEM = { 0x08, 0x08, 0x08, 0x08, 0x08, 0x08 };
-	//static const unsigned char HR_Bottom[6] PROGMEM = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x40 };
 
 	// Box pattern
 	/*unsigned char pattern1[64] PROGMEM = {
@@ -276,7 +264,6 @@ public:
 	};*/
 
 private:
-    //const char *FontData = DejaVu_Sans_5;
 	//unsigned int frame;
 };
 
