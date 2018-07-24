@@ -193,10 +193,10 @@ public:
 	void printValueFP(unsigned char x, unsigned char y, unsigned int data, unsigned char num); 	// 
 
 	// Graphics
-	void drawPixel(char x, char y);																					// Draw a single pixel at the given coordinates
-	void drawLine(char x1, char y1, char x2, char y2);																// Draw a line from point A (x1, y1) to point B (x2, y2)
-	void drawRect(char x1, char y1, char x2, char y2);																// Draw a rectangle, top left (x1, y1) to bottom right (x2, y2)
-	void drawCircle(char x0, char y0, char radius);																	// Draw a circle at the given coordinates with the given radius
+	void drawPixel(int x, int y);																					// Draw a single pixel at the given coordinates
+	void drawLine(int x1, int y1, int x2, int y2);																// Draw a line from point A (x1, y1) to point B (x2, y2)
+	void drawRect(int x1, int y1, int x2, int y2);																// Draw a rectangle, top left (x1, y1) to bottom right (x2, y2)
+	void drawCircle(int x0, int y0, int radius);																	// Draw a circle at the given coordinates with the given radius
 	void drawBitmap(unsigned char x0, unsigned char y0, unsigned char x1, unsigned char y1, unsigned char bmp[]); 	// Draw a bitmap image with the given coordinates and size
 
 	// Sheikah Character Map
@@ -238,7 +238,7 @@ public:
 	void setNOP(void); 											// 
 	
 	unsigned char buffer[1024]; 								// Screen buffer
-	unsigned char splashArray[1024];							// Splash screen bitmap array
+	//unsigned char splashArray[1024];							// Splash screen bitmap array
 
 	unsigned char selectorPosX = 0;
 	unsigned char selectorPosY = 0;

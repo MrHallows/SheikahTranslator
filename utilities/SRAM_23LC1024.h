@@ -22,8 +22,6 @@
 //#include <Arduino.h>
 #include <SPI.h>
 
-#include "../"
-
 
 /* *
  * SRAM OpCodes: Commands to the 23LC1024 chip

@@ -93,12 +93,12 @@ void OLED_SSD1306::cls(void)
 
 	for(y = 0; y < 16; y++)
 	{
-		this->writeCmd(0xb0 + y);
+		/*this->writeCmd(0xb0 + y);
 		this->writeCmd(0x00);
-		this->writeCmd(0x10);
+		this->writeCmd(0x10);*/
 
 		for (x = 0; x < OLED_WIDTH; x++)
-			this->writeData(0);
+			this->writeData(0x00);
 	}
 }
 
@@ -123,19 +123,20 @@ void OLED_SSD1306::fill(unsigned char data)
 // Clear the buffer
 void OLED_SSD1306::clearBuffer(void)
 {
-	int x, y;
+	/*int x, y;
 
 	for(x = 0; x < 1024; x++)
 	{
-		this->writeCmd(0xb0 + y);
+		/*this->writeCmd(0xb0 + y);
 		this->writeCmd(0x00);
-		this->writeCmd(0x10);
+		this->writeCmd(0x10);*/
 
-		for(y = 0; y < 8; y++) //OLED_WIDTH
-			this->buffer[y] = '\0';
-	}
+		/*for(y = 0; y < 8; y++) //OLED_WIDTH
+			this->buffer[y] = 0;
+	}*/
 		
-	//memset(this->buffer, 0, sizeof(this->buffer));
+	memset(this->buffer, 0, sizeof(this->buffer));
+	this->flushBuffer();
 }
 
 
@@ -173,11 +174,17 @@ void OLED_SSD1306::setPosition(unsigned char x, unsigned char y)
 void OLED_SSD1306::loadSplash(void)
 {
 	int i = 0;
+	//unsigned char splashArray[1024];
 
 	for(i = 0; i < 1024; i++)
-		this->splashArray[i] = pgm_read_byte(&(SheikahEyeSplash[i]));
+		this->buffer[i] = pgm_read_byte(&(SheikahEyeSplash[i]));
 
-	this->drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, this->splashArray);
+	//this->drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, this->buffer);
+	this->flushBuffer();
+	delay(5000); //15000
+	this->clearBuffer();
+	this->flushBuffer();
+	//delete splashArray;
 }
 
 
@@ -480,7 +487,7 @@ void OLED_SSD1306::printValueFP(unsigned char x, unsigned char y, unsigned int d
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 // Draw Pixel
-void OLED_SSD1306::drawPixel(char x, char y)
+void OLED_SSD1306::drawPixel(int x, int y)
 {
 	if((x < 0) || (x >= OLED_WIDTH) || (y < 0) || (y >= OLED_HEIGHT)) // Check for boundaries
     	return;
@@ -491,20 +498,20 @@ void OLED_SSD1306::drawPixel(char x, char y)
 
 // Draw Line
 // Bresenham's line drawing algorithm
-void OLED_SSD1306::drawLine(char x1, char y1, char x2, char y2)
+void OLED_SSD1306::drawLine(int x1, int y1, int x2, int y2)
 {
-	char cx = x1;
-	char cy = y1;
-	char dx = x2 - cx;
-	char dy = y2 - cy;
+	int cx = x1 + 2;
+	int cy = y1;
+	int dx = x2 - cx;
+	int dy = y2 - cy;
 
 	if(dx < 0)
 		dx = 0 - dx;
 	if(dy < 0)
 		dy = 0 - dy;
 
-	char sx = 0;
-	char sy = 0;
+	int sx = 0;
+	int sy = 0;
 
 	if(cx < x2)
 		sx = 1;
@@ -517,7 +524,7 @@ void OLED_SSD1306::drawLine(char x1, char y1, char x2, char y2)
 		sy = -1;
 	
 
-	char err = dx - dy;
+	int err = dx - dy;
 	
 	for(int n = 0; n < 1000; n++)
 	{
@@ -526,7 +533,7 @@ void OLED_SSD1306::drawLine(char x1, char y1, char x2, char y2)
 		if((cx == x2) && (cy == y2))
 			return;
 
-		char e2 = 2 * err;
+		int e2 = 2 * err;
 
 		if(e2 > (0 - dy))
 		{
@@ -543,9 +550,9 @@ void OLED_SSD1306::drawLine(char x1, char y1, char x2, char y2)
 
 
 // Draw Rectangle
-void OLED_SSD1306::drawRect(char x1, char y1, char x2, char y2)
+void OLED_SSD1306::drawRect(int x1, int y1, int x2, int y2)
 {
-	char x, y;
+	int x, y;
 	
 	for(x = x1; x < x2; x++) // Iterate over x range, draw line on y1
 		this->drawPixel(x, y1);
@@ -568,11 +575,11 @@ void OLED_SSD1306::drawRect(char x1, char y1, char x2, char y2)
 
 
 // Draw Circle
-void OLED_SSD1306::drawCircle(char x0, char y0, char radius)
+void OLED_SSD1306::drawCircle(int x0, int y0, int radius)
 {
-	char x = radius; // Set x equal to radius
-	char y = 0;
-	char de = 1 - x;
+	int x = radius; // Set x equal to radius
+	int y = 0;
+	int de = 1 - x;
  
 	while(x >= y)
 	{
@@ -591,7 +598,7 @@ void OLED_SSD1306::drawCircle(char x0, char y0, char radius)
 		else
 		{
 			x--;
-			de += 2 * (y - x) + 1; 
+			de += 2 * (y - x) + 1;
 		}
 	}
 }
@@ -626,17 +633,17 @@ void OLED_SSD1306::drawBitmap(unsigned char x0, unsigned char y0, unsigned char 
 void OLED_SSD1306::printSheikahMap(void)
 {
 	// TODO: Create a for loop to display this [hopefully] using less memory.
-	unsigned char x = 6, y = 0, i = 0;
+	/*unsigned char x = 6, y = 0, i = 0;
 
 	for(i = 0; i < sizeof(SheikahChars); i++)
 	{
 		for(x = 6; x <= 114; x += 18)
 			this->print8x8Str(x, y, SheikahChars[i]);
-			
-		x = 6;
+
+		//x = 6;
 		y++;
-	}
-	/*this->print8x8Str(6, 0, "A");
+	}*/
+	this->print8x8Str(6, 0, "A");
 	this->print8x8Str(24, 0, "B");
 	this->print8x8Str(42, 0, "C");
 	this->print8x8Str(60, 0, "D");
@@ -666,7 +673,7 @@ void OLED_SSD1306::printSheikahMap(void)
 	this->print8x8Str(60, 3, "Y");
 	this->print8x8Str(78, 3, "Z");
 	this->print8x8Str(96, 3, " ");
-	this->print8x8Str(114, 3, ".");*/
+	this->print8x8Str(114, 3, ".");
 }
 
 
@@ -783,7 +790,7 @@ void OLED_SSD1306::moveSelector(void)
 		// Store prevSelectorPosY
 		this->prevSelectorPosY = this->selectorPosY;
 		// Decrement selectorPosY
-		if(this->selectorPosY < 0) {
+		if(this->selectorPosY <= 0) {
 			this->selectorPosY = 3;
 			this->prevSelectorPosY = 0;
 		}
@@ -792,7 +799,7 @@ void OLED_SSD1306::moveSelector(void)
 
 		this->clearPrevSelector();
 		this->setSelectorPos(this->selectorPosX, this->selectorPosY);
-		this->setDelay(45);
+		delay(120);
 	}
 
 	// Down
@@ -809,7 +816,7 @@ void OLED_SSD1306::moveSelector(void)
 
 		this->clearPrevSelector();
 		this->setSelectorPos(this->selectorPosX, this->selectorPosY);
-		this->setDelay(45);
+		delay(120);
 	}
 
 	// Left
@@ -817,7 +824,7 @@ void OLED_SSD1306::moveSelector(void)
 		// Store prevSelectorPosX
 		this->prevSelectorPosX = this->selectorPosX;
 		// Decrement selectorPosX
-		if(this->selectorPosX < 0) {
+		if(this->selectorPosX <= 0) {
 			this->selectorPosX = 6;
 			this->prevSelectorPosX = 0;
 		}
@@ -826,7 +833,7 @@ void OLED_SSD1306::moveSelector(void)
 
 		this->clearPrevSelector();
 		this->setSelectorPos(this->selectorPosX, this->selectorPosY);
-		this->setDelay(45);
+		delay(120);
 	}
 
 	// Right
@@ -843,7 +850,7 @@ void OLED_SSD1306::moveSelector(void)
 
 		this->clearPrevSelector();
 		this->setSelectorPos(this->selectorPosX, this->selectorPosY);
-		this->setDelay(45);
+		delay(120);
 	}
 
 	// A
@@ -863,7 +870,7 @@ void OLED_SSD1306::moveSelector(void)
 		this->print6x8Single(this->prevCursorPosX * 6, 7, this->getSelectedChar());
 		//this->cursorPosX++;
 		//this->setCursor(this->cursorPosX * 6, 7);
-		this->setDelay(45);
+		delay(120);
 	}
 
 	// B
@@ -874,13 +881,13 @@ void OLED_SSD1306::moveSelector(void)
 		// Store prevCursorPosX
 		this->prevCursorPosX = this->cursorPosX + 1;
 		
-		this->setDelay(45);
+		delay(120);
 	}
 
-	/*this->print6x8Str(0, 4, "CursorX: ");
+	this->print6x8Str(0, 4, "CursorX: ");
 	this->printValueI(67, 4, this->cursorPosX);
 	this->print6x8Str(0, 5, "pCursorX: ");
-	this->printValueI(67, 5, this->prevCursorPosX);*/
+	this->printValueI(67, 5, this->prevCursorPosX);
 
 	/*this->print6x8Str(0, 4, "SelectorX: ");
 	this->printValueI(67, 4, this->selectorPosX);
@@ -891,7 +898,7 @@ void OLED_SSD1306::moveSelector(void)
 	this->print6x8Single(96, 4, this->getSelectedChar());
 	this->print6x8Str(102, 4, "]");*/
 	
-	//this->print6x8Str(0, 7, ">");
+	this->print6x8Str(0, 7, ">");
 
 	/*this->print6x8Str(0, 6, "PreviousX: ");
 	this->printValueI(67, 6, this->prevSelectorPosX);
@@ -932,7 +939,7 @@ void OLED_SSD1306::setCursorPos(unsigned char x, unsigned char y)
 	this->prevCursorPosY = this->cursorPosY - 1;
 	if(x > 19) {
 		this->prevCursorPosX = 19;
-		x = 1;
+		x = 20;
 	}
 	/*if(x > 21) {
 		this->prevCursorPosX = 0;
@@ -1222,7 +1229,7 @@ void OLED_SSD1306::initDisplay(void)
 	digitalWrite(SCL_PIN, HIGH);
 	digitalWrite(RST_PIN, LOW);
 	//for(i = 0; i < 100; i++) asm("nop");
-	this->setDelay(50);
+	delay(50);
 	//OLED_RSTH;
 	digitalWrite(RST_PIN, HIGH);
 

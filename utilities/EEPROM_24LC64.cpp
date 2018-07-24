@@ -75,7 +75,7 @@ void EEPROM_24LC64::writeBitmap(int deviceAddr, unsigned int chipAddr, unsigned 
 	{
         this->writeByte(deviceAddr, (chipAddr + i), data[c]);
 		i++;
-		OLED.setDelay(100);
+		delay(100);
 	}*/
 
 	unsigned char c = 0, j = 0, buffer = 30;
@@ -88,7 +88,7 @@ void EEPROM_24LC64::writeBitmap(int deviceAddr, unsigned int chipAddr, unsigned 
 			this->writePage(deviceAddr, (chipAddr + i), data[j], buffer);
 			i++;
 			j++;
-			OLED.setDelay(100);
+			delay(100);
 		}
 		c = 0;
 	}

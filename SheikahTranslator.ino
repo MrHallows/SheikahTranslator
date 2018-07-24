@@ -730,7 +730,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 	digitalWrite(SCL_PIN, HIGH);
 	digitalWrite(RST_PIN, LOW);
 	//for(i = 0; i < 100; i++) asm("nop");
-	OLED.setDelay(50);
+	delay(50);
 	//OLED_RSTH;
 	digitalWrite(RST_PIN, HIGH);
 
@@ -1221,7 +1221,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 
 		OLED.clearPrevSelector();
 		OLED.setSelectorPos(selectorPosX, selectorPosY);
-		OLED.setDelay(45);
+		delay(45);
 	}
 
 	// Down
@@ -1238,7 +1238,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 
 		OLED.clearPrevSelector();
 		OLED.setSelectorPos(selectorPosX, selectorPosY);
-		OLED.setDelay(45);
+		delay(45);
 	}
 
 	// Left
@@ -1255,7 +1255,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 
 		OLED.clearPrevSelector();
 		OLED.setSelectorPos(selectorPosX, selectorPosY);
-		OLED.setDelay(45);
+		delay(45);
 	}
 
 	// Right
@@ -1272,7 +1272,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 
 		OLED.clearPrevSelector();
 		OLED.setSelectorPos(selectorPosX, selectorPosY);
-		OLED.setDelay(45);
+		delay(45);
 	}
 
 	// A
@@ -1292,7 +1292,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 		OLED.print6x8Single(prevCursorPosX * 6, 7, OLED_Get_Selected_Char());
 		//cursorPosX++;
 		//OLED.setCursor(cursorPosX * 6, 7);
-		OLED.setDelay(45);
+		delay(45);
 	}
 
 	// B
@@ -1303,7 +1303,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 		// Store prevCursorPosX
 		prevCursorPosX = cursorPosX + 1;
 		
-		OLED.setDelay(45);
+		delay(45);
 	}
 
 	/*OLED.print6x8Str(0, 4, "CursorX: ");
@@ -1469,7 +1469,7 @@ const unsigned char F6x8[][6] = { // Gasara6x8[]
 	Serial.begin(9600);
 	EEPROM.writePage(0x50, 0, (unsigned char*)testData, sizeof(testData)); // Write to EEPROM
 
-	OLED.setDelay(100); // Add a small delay (1/10th of a second)
+	delay(100); // Add a small delay (1/10th of a second)
 
 	Serial.println(F("Data was successfully written to memory (EEPROM)!"));
 }
@@ -1491,7 +1491,7 @@ void EEPROM_TestLoop()
 	}
 
 	Serial.println(F(" ")); // Newline
-	OLED.setDelay(2000); // 2 second delay
+	delay(2000); // 2 second delay
 }*/
 
 
@@ -1508,7 +1508,7 @@ void setup()
 	//Serial.println(F("Data was successfully written to memory (EEPROM)!"), sizeof(SheikahEyeSplash));
 	
 	/*EEPROM.writeBitmap(0x50, 0, SheikahEyeSplash, sizeof(SheikahEyeSplash));
-	OLED.setDelay(100);
+	delay(100);
 	Serial.println(F("Data was successfully written to memory (EEPROM)!"));
 	*/
 
@@ -1540,73 +1540,76 @@ void setup()
 
 	OLED.drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, loadSplash);*/
 	OLED.loadSplash();
-	OLED.setDelay(20000); //15000
-	OLED.cls();
+	/*delay(20000); //15000
+	OLED.clearBuffer();
+	OLED.cls();*/
 
-	/*OLED.print6x8Str(6, 0, "Sheikah to English");
+	OLED.print6x8Str(6, 0, "Sheikah to English");
 	OLED.print6x8Str(12, 1, "Translation Tool");
 	OLED.print6x8Str(0, 4, "It's dangerous to go");
 	OLED.print6x8Str(0, 5, "alone! Take this.");
 	OLED.print6x8Str(0, 7, "Happy Birthday, Matt!");
-	OLED.setDelay(10000); //15000
-	OLED.cls();*/
-
+	delay(5000); //10000
 	OLED.clearBuffer();
-	OLED.setSelectorPos(OLED.selectorPosX, OLED.selectorPosY);
-	OLED.setCursor(OLED.cursorPosX * 6, OLED.cursorPosY);
+	//OLED.cls();
 
 	
 	//OLED.drawBitmap(32, 0, 96, OLED_HEIGHT, Mickey);
-	//OLED.setDelay(10000); //15000
+	//delay(10000); //15000
+
+	//OLED.clearBuffer();
+	//OLED.drawRect(2, 54, 127, 63);
+	OLED.drawLine(0, 54, 127, 54);
+	OLED.flushBuffer();
+	OLED.setSelectorPos(OLED.selectorPosX, OLED.selectorPosY);
+	OLED.setCursor(OLED.cursorPosX * 6, OLED.cursorPosY);
 	
 	//OLED.clearBuffer();
-	OLED.drawRect(0, 54, 127, 63);
-	OLED.flushBuffer();
 
 
 	/*
 	OLED.print6x8Str(0, 0, "Graphics test..");
-	OLED.setDelay(2000);
+	delay(2000);
 	OLED.cls();
 
 	// Draw pixel
 	OLED.print6x8Str(0, 0, "Draw pixel..");
-	OLED.setDelay(2000);
+	delay(2000);
 	OLED.cls();
 	OLED.clearBuffer();
 	OLED.drawPixel(8, 8);
 	OLED.flushBuffer();
-	OLED.setDelay(2000);
+	delay(2000);
 	//OLED.cls();
 
 	// Draw line
 	OLED.print6x8Str(0, 0, "Draw line..");
-	OLED.setDelay(2000);
+	delay(2000);
 	OLED.cls();
 	OLED.clearBuffer();
 	OLED.drawLine(0, 54, 127, 54);
 	OLED.flushBuffer();
-	OLED.setDelay(2000);
+	delay(2000);
 	//OLED.cls();
 
 	// Draw rectangle
 	OLED.print6x8Str(0, 0, "Draw rectangle..");
-	OLED.setDelay(2000);
+	delay(2000);
 	OLED.cls();
 	OLED.clearBuffer();
 	OLED.drawRect(16, 16, 80, 60);
 	OLED.flushBuffer();
-	OLED.setDelay(2000);
+	delay(2000);
 	//OLED.cls();
 
 	// Draw circle
 	OLED.print6x8Str(0, 0, "Draw circle..");
-	OLED.setDelay(2000);
+	delay(2000);
 	//OLED.cls();
 	OLED.clearBuffer();
 	OLED.drawCircle(96, 50, 10);
 	OLED.flushBuffer();
-	OLED.setDelay(2000);
+	delay(2000);
 	//OLED.cls();
 	*/
 
@@ -1616,7 +1619,7 @@ void setup()
 		{
             OLED.writeData(OLED.pattern1[x]); //0x81
             i++;
-			//OLED.setDelay(100);
+			//delay(100);
         }
         i--;
     }*/
@@ -1629,8 +1632,9 @@ void setup()
 
 void loop()
 {
-	//OLED.drawRect(0, 52, 127, 63);
-	//OLED.flushBuffer();
+	//OLED.clearBuffer();
+	/*OLED.drawRect(0, 54, 127, 63);
+	OLED.flushBuffer();*/
 	//OLED.print6x8Str(0, 0, "C:\\>cd \\users\\auton\\");
 
 	//OLED.print6x8Str(0, 0, "AaBbCcDdEeFfGgHhIiJj");
