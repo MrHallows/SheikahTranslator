@@ -158,6 +158,7 @@ static const unsigned char SelectorBlank[6] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 
 static const unsigned char SheikahChars[28] PROGMEM = { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x20, 0x2E };
 static const unsigned char Cursor[6] PROGMEM = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x00 };
 static const unsigned char CursorBlank[6] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
+static const unsigned char CursorBlank_8x8[8] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 static const unsigned char HR_Top[6] PROGMEM = { 0x02, 0x02, 0x02, 0x02, 0x02, 0x02 };
 static const unsigned char HR_Middle[6] PROGMEM = { 0x08, 0x08, 0x08, 0x08, 0x08, 0x08 };
 static const unsigned char HR_Bottom[6] PROGMEM = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x40 };
@@ -179,6 +180,7 @@ public:
 	void flushBuffer(void);										// Push buffer data to the screen
 	void setPosition(unsigned char x, unsigned char y); 		// Set the coordinates
 	void loadSplash(void);										// Load the splash screen bitmap from flash memory
+	void loadTitle(void);										// Load the title screen
 	void setDelay(unsigned int ms); 							// Set delay in milliseconds
 
 	// Text
@@ -186,6 +188,7 @@ public:
 	void print6x8Str(unsigned char x, unsigned char y, unsigned char ch[]); 					// Print string at the given coordinates (Shard_6x8 font)
 	void print6x8Single(unsigned char x, unsigned char y, char ch); 							// Print a single character (Shard_6x8 font)
 	void print8x8Str(unsigned char x, unsigned char y, unsigned char ch[]); 					// Print string at the given coordinates (Sheikah_8x8 font)
+	void print8x8Single(unsigned char x, unsigned char y, char ch); 							// Print a single character (Sheikah_8x8 font)
 	void print8x16Str(unsigned char x, unsigned char y, unsigned char ch[]); 					// Print string at the given coordinates (F8x16 font)
 	void printValueC(unsigned char x, unsigned char y, char data); 								// 
 	void printValueI(unsigned char x, unsigned char y, int data); 								// 
@@ -214,6 +217,7 @@ public:
 	void printLine(void); 										// 
 	void clearLine(void); 										// 
 	void backspace(void); 										// 
+	void backspace_8x8(void); 									// 
 
 	// Display Configuration
 	void setStartColumn(unsigned char d); 						// 

@@ -1527,44 +1527,17 @@ void setup()
 	//unsigned char receivedArray = EEPROM.loadBitmap(0x50, 0, 1024);
 	//OLED.drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, EEPROM.loadBitmap(0x50, 0, sizeof(SheikahEyeSplash)));
 
-	//OLED.drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, SheikahEyeSplash);
-	//OLED.drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, OLED.loadData(SheikahEyeSplash, 1024)); // Shard_6x8, Sheikah_8x8, SheikahEyeSplash
-
-	/*unsigned char bitmapArray[1024];
-	int i = 0;
-
-	for(i = 0; i < 1024; i++)
-	{
-		bitmapArray[i] = pgm_read_byte(&(SheikahEyeSplash[i]));
-	}
-
-	OLED.drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, loadSplash);*/
 	OLED.loadSplash();
-	/*delay(20000); //15000
-	OLED.clearBuffer();
-	OLED.cls();*/
-
-	OLED.print6x8Str(6, 0, "Sheikah to English");
-	OLED.print6x8Str(12, 1, "Translation Tool");
-	OLED.print6x8Str(0, 4, "It's dangerous to go");
-	OLED.print6x8Str(0, 5, "alone! Take this.");
-	OLED.print6x8Str(0, 7, "Happy Birthday, Matt!");
-	delay(5000); //10000
-	OLED.clearBuffer();
-	//OLED.cls();
-
+	OLED.loadTitle();
 	
 	//OLED.drawBitmap(32, 0, 96, OLED_HEIGHT, Mickey);
 	//delay(10000); //15000
 
-	//OLED.clearBuffer();
-	//OLED.drawRect(2, 54, 127, 63);
+	OLED.drawLine(0, 35, 127, 35);
 	OLED.drawLine(0, 54, 127, 54);
 	OLED.flushBuffer();
 	OLED.setSelectorPos(OLED.selectorPosX, OLED.selectorPosY);
 	OLED.setCursor(OLED.cursorPosX * 6, OLED.cursorPosY);
-	
-	//OLED.clearBuffer();
 
 
 	/*

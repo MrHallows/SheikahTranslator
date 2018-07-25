@@ -174,17 +174,55 @@ void OLED_SSD1306::setPosition(unsigned char x, unsigned char y)
 void OLED_SSD1306::loadSplash(void)
 {
 	int i = 0;
-	//unsigned char splashArray[1024];
+	/*unsigned long prev_time = 0;
+	unsigned long current_time = millis();
+	unsigned long time_delay = 250;*/
 
 	for(i = 0; i < 1024; i++)
 		this->buffer[i] = pgm_read_byte(&(SheikahEyeSplash[i]));
 
 	//this->drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, this->buffer);
 	this->flushBuffer();
-	delay(5000); //15000
-	this->clearBuffer();
+	
+	// If A or B is pressed, skip
+	/*while(current_time - prev_time <= time_delay)
+	{
+		// Do something
+	}*/
+
+	while(1)
+	{
+		if(digitalRead(BTN_A_PIN) == HIGH || digitalRead(BTN_B_PIN) == HIGH) {
+			this->clearBuffer();
+			return;
+		}
+	}
+}
+
+
+// Load char array data from PROGMEM
+void OLED_SSD1306::loadTitle(void)
+{
+	this->drawRect(2, 5, 127, 17);
+	drawPixel(53, 51);
+	drawPixel(60, 51);
+	drawPixel(67, 51);
+	drawPixel(74, 51);
 	this->flushBuffer();
-	//delete splashArray;
+
+	this->print6x8Str(12, 1, "Sheikah Translator");
+	//this->print6x8Str(12, 1, "Translation Tool");
+	this->print6x8Str(0, 4, "\"It's dangerous to go");
+	this->print6x8Str(6, 5, "alone! Take this.\"");
+	this->print6x8Str(0, 7, "Happy Birthday, Matt!");
+
+	while(1)
+	{
+		if(digitalRead(BTN_A_PIN) == HIGH || digitalRead(BTN_B_PIN) == HIGH) {
+			this->clearBuffer();
+			return;
+		}
+	}
 }
 
 
@@ -289,6 +327,27 @@ void OLED_SSD1306::print8x8Str(unsigned char x, unsigned char y, unsigned char c
 
 		x += 9;
 		j++;
+	}
+}
+
+
+// Print Single Sheikah_8x8 Character
+void OLED_SSD1306::print8x8Single(unsigned char x, unsigned char y, char ch)
+{
+	unsigned char c = 0, i = 0, j = 0;
+	if(ch != '\0')
+	{
+		c = ch - 32;
+		if (x > OLED_WIDTH - 8)
+		{
+			x = 0;
+			y++;
+		}
+		this->setPosition(x, y);
+		for (i = 0; i < 8; i++)
+			this->writeData(pgm_read_byte(&(Sheikah_8x8[c][i])));
+
+		x += 9;
 	}
 }
 
@@ -557,7 +616,7 @@ void OLED_SSD1306::drawRect(int x1, int y1, int x2, int y2)
 	for(x = x1; x < x2; x++) // Iterate over x range, draw line on y1
 		this->drawPixel(x, y1);
 	
-	for(x = x1; x < x2; x++) // Iterate over x range, draw line on y2
+	for(x = x1; x <= x2; x++) // Iterate over x range, draw line on y2
 		this->drawPixel(x, y2);
 	
 	for(y = y1; y < y2; y++) // Iterate over y range, draw line on x1
@@ -858,8 +917,8 @@ void OLED_SSD1306::moveSelector(void)
 		// Store prevCursorPosX
 		this->prevCursorPosX = this->cursorPosX - 1;
 		// Increment selectorPosX
-		if(this->cursorPosX > 19) {
-			this->cursorPosX = 1;
+		if(this->cursorPosX >= 20) {
+			this->cursorPosX = 20;
 			this->prevCursorPosX = 19;
 		}
 		else {
@@ -868,6 +927,7 @@ void OLED_SSD1306::moveSelector(void)
 		//this->clearPrevCursor();
 		this->setCursorPos(this->cursorPosX, this->cursorPosY);
 		this->print6x8Single(this->prevCursorPosX * 6, 7, this->getSelectedChar());
+		this->print8x8Single(this->prevCursorPosX * 9, 5, this->getSelectedChar());
 		//this->cursorPosX++;
 		//this->setCursor(this->cursorPosX * 6, 7);
 		delay(120);
@@ -877,6 +937,7 @@ void OLED_SSD1306::moveSelector(void)
 	if(digitalRead(BTN_B_PIN) == HIGH) {
 		//this->clearLine();
 		this->backspace();
+		//this->backspace_8x8();
 		
 		// Store prevCursorPosX
 		this->prevCursorPosX = this->cursorPosX + 1;
@@ -884,10 +945,10 @@ void OLED_SSD1306::moveSelector(void)
 		delay(120);
 	}
 
-	this->print6x8Str(0, 4, "CursorX: ");
+	/*this->print6x8Str(0, 4, "CursorX: ");
 	this->printValueI(67, 4, this->cursorPosX);
 	this->print6x8Str(0, 5, "pCursorX: ");
-	this->printValueI(67, 5, this->prevCursorPosX);
+	this->printValueI(67, 5, this->prevCursorPosX);*/
 
 	/*this->print6x8Str(0, 4, "SelectorX: ");
 	this->printValueI(67, 4, this->selectorPosX);
@@ -937,7 +998,7 @@ void OLED_SSD1306::setCursorPos(unsigned char x, unsigned char y)
 {
 	this->prevCursorPosX = this->cursorPosX - 1;
 	this->prevCursorPosY = this->cursorPosY - 1;
-	if(x > 19) {
+	if(x == 20) {
 		this->prevCursorPosX = 19;
 		x = 20;
 	}
@@ -1001,7 +1062,7 @@ void OLED_SSD1306::clearLine(void)
 }
 
 
-// 
+// Backspace
 void OLED_SSD1306::backspace(void)
 {
 	unsigned char i = 0;
@@ -1021,6 +1082,29 @@ void OLED_SSD1306::backspace(void)
 		this->prevCursorPosX--;
 	}
 	this->setCursor(this->cursorPosX * 6, this->cursorPosY);
+}
+
+
+// Backspace Sheikah_8x8
+void OLED_SSD1306::backspace_8x8(void)
+{
+	unsigned char i = 0;
+
+	this->setPosition(this->cursorPosX * 9, 5);
+
+	for (i = 0; i < 8; i++)
+		this->writeData(pgm_read_byte(&(CursorBlank_8x8[i])));
+
+	if(this->cursorPosX < 2)
+		this->cursorPosX = 1;
+	else
+	{
+		this->prevCursorPosX++;
+		//this->clearPrevCursor();
+		this->cursorPosX--;
+		this->prevCursorPosX--;
+	}
+	this->setCursor(this->cursorPosX * 9, 5);
 }
 
 
