@@ -22,6 +22,7 @@
 #include <Arduino.h>
 #include <avr/pgmspace.h>
 
+//#include "../utilities/Buttons.h"
 #include "../include/Shard_6x8.h"
 #include "../include/Sheikah_8x8.h"
 #include "../include/F6x8.h"
@@ -51,6 +52,11 @@
 //#define BTN_R_PIN // Right Bumper (NOT YET ADDED)
 //#define BTN_START_PIN // (NOT YET ADDED)
 //#define BTN_SELECT_PIN // (NOT YET ADDED)
+
+// Menus
+#define SHEIKAH_CHAR					0
+#define SHEIKAH_NUMS					1
+#define SETTINGS						2
 
 // Display Commands
 /*
@@ -155,7 +161,7 @@
 // Globals
 static const unsigned char Selector[6] PROGMEM = { 0x00, 0x7C, 0x38, 0x10, 0x00, 0x00 };
 static const unsigned char SelectorBlank[6] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
-static const unsigned char SheikahChars[28] PROGMEM = { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x20, 0x2E };
+static const unsigned char SheikahChars[38] PROGMEM = { 0x41, 0x42, 0x43, 0x44, 0x45, 0x46, 0x47, 0x48, 0x49, 0x4A, 0x4B, 0x4C, 0x4D, 0x4E, 0x4F, 0x50, 0x51, 0x52, 0x53, 0x54, 0x55, 0x56, 0x57, 0x58, 0x59, 0x5A, 0x20, 0x2E, 0x30, 0x31, 0x32, 0x33, 0x34, 0x35, 0x36, 0x37, 0x38, 0x39 };
 static const unsigned char Cursor[6] PROGMEM = { 0x40, 0x40, 0x40, 0x40, 0x40, 0x00 };
 static const unsigned char CursorBlank[6] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
 static const unsigned char CursorBlank_8x8[8] PROGMEM = { 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00 };
@@ -181,6 +187,7 @@ public:
 	void setPosition(unsigned char x, unsigned char y); 		// Set the coordinates
 	void loadSplash(void);										// Load the splash screen bitmap from flash memory
 	void loadTitle(void);										// Load the title screen
+	void displayMenu(void);										// Options: SHEIKAH_CHAR, SHEIKAH_NUMS, SETTINGS
 	void setDelay(unsigned int ms); 							// Set delay in milliseconds
 
 	// Text
@@ -204,6 +211,7 @@ public:
 
 	// Sheikah Character Map
 	void printSheikahMap(void); 								// Display the Sheikah character map
+	void printSheikahNums(void); 								// Display the Sheikah number map
 	void setSelector(unsigned char x, unsigned char y); 		// Place the selector at the given position
 	void setSelectorPos(unsigned char x, unsigned char y); 		// 
 	void clearPrevSelector(void); 								// 
@@ -242,7 +250,7 @@ public:
 	void setNOP(void); 											// 
 	
 	unsigned char buffer[1024]; 								// Screen buffer
-	//unsigned char splashArray[1024];							// Splash screen bitmap array
+	unsigned char activeMenu = SHEIKAH_CHAR;
 
 	unsigned char selectorPosX = 0;
 	unsigned char selectorPosY = 0;

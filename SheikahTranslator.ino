@@ -1625,7 +1625,8 @@ void loop()
 	//OLED.print8x8Str(2, 4, "A_B_C_D_E_F_G_H_I_J_K_L_M_N_O_P_Q_R_S_T_U_V_W_X_Y_Z");
 
 
-	OLED.printSheikahMap();
+	//OLED.printSheikahMap();
+	OLED.displayMenu();
 	OLED.moveSelector();
 
 	//EEPROM_TestLoop();

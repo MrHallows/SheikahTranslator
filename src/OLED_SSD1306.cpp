@@ -93,7 +93,7 @@ void OLED_SSD1306::cls(void)
 
 	for(y = 0; y < 16; y++)
 	{
-		/*this->writeCmd(0xb0 + y);
+		/*this->writeCmd(0xB0 + y);
 		this->writeCmd(0x00);
 		this->writeCmd(0x10);*/
 
@@ -110,7 +110,7 @@ void OLED_SSD1306::fill(unsigned char data)
 
 	for (y = 0; y < 8; y++)
 	{
-		this->writeCmd(0xb0 + y);
+		this->writeCmd(0xB0 + y);
 		this->writeCmd(0x00);
 		this->writeCmd(0x10);
 
@@ -127,7 +127,7 @@ void OLED_SSD1306::clearBuffer(void)
 
 	for(x = 0; x < 1024; x++)
 	{
-		/*this->writeCmd(0xb0 + y);
+		/*this->writeCmd(0xB0 + y);
 		this->writeCmd(0x00);
 		this->writeCmd(0x10);*/
 
@@ -147,7 +147,7 @@ void OLED_SSD1306::flushBuffer(void)
 
 	for(i = 0; i < 1024; i++) //OLED_WIDTH
 	{
-		/*this->writeCmd(0xb0 + y);
+		/*this->writeCmd(0xB0 + y);
 		this->writeCmd(0x00);
 		this->writeCmd(0x10);*/
 
@@ -164,7 +164,7 @@ void OLED_SSD1306::flushBuffer(void)
 // Set Position
 void OLED_SSD1306::setPosition(unsigned char x, unsigned char y)
 {
-	this->writeCmd(0xb0 + y);
+	this->writeCmd(0xB0 + y);
 	this->writeCmd(((x & 0xf0) >> 4) | 0x10);
 	this->writeCmd((x & 0x0f) | 0x00);
 }
@@ -174,21 +174,11 @@ void OLED_SSD1306::setPosition(unsigned char x, unsigned char y)
 void OLED_SSD1306::loadSplash(void)
 {
 	int i = 0;
-	/*unsigned long prev_time = 0;
-	unsigned long current_time = millis();
-	unsigned long time_delay = 250;*/
 
 	for(i = 0; i < 1024; i++)
 		this->buffer[i] = pgm_read_byte(&(SheikahEyeSplash[i]));
 
-	//this->drawBitmap(0, 0, OLED_WIDTH, OLED_HEIGHT, this->buffer);
 	this->flushBuffer();
-	
-	// If A or B is pressed, skip
-	/*while(current_time - prev_time <= time_delay)
-	{
-		// Do something
-	}*/
 
 	while(1)
 	{
@@ -200,22 +190,22 @@ void OLED_SSD1306::loadSplash(void)
 }
 
 
-// Load char array data from PROGMEM
+// Display the title screen
 void OLED_SSD1306::loadTitle(void)
 {
 	this->drawRect(2, 5, 127, 17);
-	drawPixel(53, 51);
-	drawPixel(60, 51);
-	drawPixel(67, 51);
-	drawPixel(74, 51);
+	this->drawPixel(53, 51);
+	this->drawPixel(60, 51);
+	this->drawPixel(67, 51);
+	this->drawPixel(74, 51);
 	this->flushBuffer();
 
 	this->print6x8Str(12, 1, "Sheikah Translator");
-	//this->print6x8Str(12, 1, "Translation Tool");
 	this->print6x8Str(0, 4, "\"It's dangerous to go");
 	this->print6x8Str(6, 5, "alone! Take this.\"");
 	this->print6x8Str(0, 7, "Happy Birthday, Matt!");
 
+	// Wait for A or B button to be pressed
 	while(1)
 	{
 		if(digitalRead(BTN_A_PIN) == HIGH || digitalRead(BTN_B_PIN) == HIGH) {
@@ -226,7 +216,32 @@ void OLED_SSD1306::loadTitle(void)
 }
 
 
-// 
+// Options: SHEIKAH_CHAR, SHEIKAH_NUMS, SETTINGS
+void displayMenu(void)
+{
+	switch(this->activeMenu)
+	{
+		case SHEIKAH_CHAR:
+			this->printSheikahMap();
+			break;
+
+		case SHEIKAH_NUMS:
+			this->printSheikahNums();
+			break;
+
+		case SETTINGS:
+			//this->settingsMenu();
+			break;
+
+		default:
+			this->printSheikahMap();
+			break;
+	}
+}
+
+
+// Set Delay (not currently working..)
+//=> TODO: Create a timer that is interruptible
 void OLED_SSD1306::setDelay(unsigned int ms)
 {
 	unsigned int a;
@@ -689,9 +704,9 @@ void OLED_SSD1306::drawBitmap(unsigned char x0, unsigned char y0, unsigned char 
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 // Display the Sheikah Character Map
+// TODO: Create a for loop to display this [hopefully] using less memory.
 void OLED_SSD1306::printSheikahMap(void)
 {
-	// TODO: Create a for loop to display this [hopefully] using less memory.
 	/*unsigned char x = 6, y = 0, i = 0;
 
 	for(i = 0; i < sizeof(SheikahChars); i++)
@@ -733,6 +748,35 @@ void OLED_SSD1306::printSheikahMap(void)
 	this->print8x8Str(78, 3, "Z");
 	this->print8x8Str(96, 3, " ");
 	this->print8x8Str(114, 3, ".");
+}
+
+
+// Print Sheikah Number Map
+void OLED_SSD1306::printSheikahNums(void)
+{
+	this->print8x8Str(6, 1, "");
+	this->print8x8Str(24, 1, "0");
+	this->print8x8Str(42, 1, "1");
+	this->print8x8Str(60, 1, "2");
+	this->print8x8Str(78, 1, "3");
+	this->print8x8Str(96, 1, "4");
+	this->print8x8Str(114, 1, "");
+
+	this->print8x8Str(6, 2, "");
+	this->print8x8Str(24, 2, "5");
+	this->print8x8Str(42, 2, "6");
+	this->print8x8Str(60, 2, "7");
+	this->print8x8Str(78, 2, "8");
+	this->print8x8Str(96, 2, "9");
+	this->print8x8Str(114, 2, "");
+
+	/*this->print8x8Str(6, 3, "");
+	this->print8x8Str(24, 3, "");
+	this->print8x8Str(42, 3, "7");
+	this->print8x8Str(60, 3, "8");
+	this->print8x8Str(78, 3, "9");
+	this->print8x8Str(96, 3, "");
+	this->print8x8Str(114, 3, "");*/
 }
 
 
@@ -943,6 +987,22 @@ void OLED_SSD1306::moveSelector(void)
 		this->prevCursorPosX = this->cursorPosX + 1;
 		
 		delay(120);
+	}
+
+	// B && Right
+	if(digitalRead(BTN_B_PIN) == HIGH && digitalRead(BTN_RIGHT_PIN) == HIGH) {
+		// Switch to number map
+		this->activeMenu = SHEIKAH_NUMS;
+		
+		//delay(120);
+	}
+
+	// B && Left
+	if(digitalRead(BTN_B_PIN) == HIGH && digitalRead(BTN_LEFT_PIN) == HIGH) {
+		// Switch back to character map
+		this->activeMenu = SHEIKAH_CHAR;
+		
+		//delay(120);
 	}
 
 	/*this->print6x8Str(0, 4, "CursorX: ");

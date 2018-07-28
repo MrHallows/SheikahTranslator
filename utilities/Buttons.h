@@ -3,24 +3,24 @@
 #ifndef BUTTONS_H
 #define	BUTTONS_H
 
-#include <Arduino.h>
-#include "settings.c"
+//#include <Arduino.h>
+//#include "settings.c"
 
 
 class Buttons
 {
-    public:
+public:
     void begin();
     void update();
 
-    boolean pressed(uint8_t button);
-    boolean released(uint8_t button);
-    boolean held(uint8_t button, uint8_t time);
-    boolean repeat(uint8_t button, uint8_t period);
+    bool pressed(unsigned char button);
+    bool released(unsigned char button);
+    bool held(unsigned char button, unsigned char time);
+    bool repeat(unsigned char button, unsigned char period);
 
-    uint8_t timeHeld(uint8_t button);
-    uint8_t pins[NUM_BTN];
-    uint8_t states[NUM_BTN];
+    unsigned char timeHeld(unsigned char button);
+    unsigned char pins[NUM_BTN];
+    unsigned char states[NUM_BTN];
 };
 
 
